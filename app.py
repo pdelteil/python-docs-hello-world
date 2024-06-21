@@ -8,8 +8,9 @@ def hello():
     <!DOCTYPE html>
     <html>
     <body>
-        <!-- Takeover by pdelteil -->
-    </body>
+                          
+                           <!-- Takeover by pdelteil -->
+     </body>
     </html>
     """
     return html_content
