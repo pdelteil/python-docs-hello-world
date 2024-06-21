@@ -7,9 +7,7 @@ def hello():
     html_content = """
     <!DOCTYPE html>
     <html>
-
     <body>
-      
         <!-- Takeover by pdelteil -->
     </body>
     </html>
