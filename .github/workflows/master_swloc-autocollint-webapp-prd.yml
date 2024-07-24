@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python version
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -36,7 +36,7 @@ jobs:
         run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-app
           path: |
@@ -49,10 +49,12 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-app
 
@@ -60,10 +62,17 @@ jobs:
         run: unzip release.zip
 
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_757145417CD34337AEB6069710945D77 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_32000DAE8C444686A465B37D5BC98B16 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_94AA48151F584034AB0B8E9F0CA731FC }}
+
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
           app-name: 'swloc-autocollint-webapp-prd'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0363855277FE4FB38E4438CB55FDF34D }}
+          
